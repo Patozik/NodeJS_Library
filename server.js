@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser')
 const db = require('./Models')
 const userRoutes = require('./Routes/userRoutes')
 const bookRoutes = require('./Routes/bookRoutes')
+const cors = require('cors');
 
 
 
@@ -13,6 +14,8 @@ const bookRoutes = require('./Routes/bookRoutes')
 const PORT = process.env.PORT || 3000;
 
 const app = express();
+
+app.use(cors());
 
 //middleware
 app.use(express.json());

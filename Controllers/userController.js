@@ -46,6 +46,47 @@ const signup = async (req, res) => {
     }
 };
 
+const generateAdminAccounts = async (req, res) => {
+    try {
+        const generateNumber =  () => {
+            return Math.floor(Math.random() * 8999) + 1000;
+        }
+
+        const generatePassword = () => {
+            return 'Tajne' + generateNumber();
+        }
+
+        const generateData = async () => {
+            const password = generatePassword();
+
+            const passwordHash = await bcrypt.hash(password, 10);
+
+            const data = {
+                name: 'Name' + generateNumber(),
+                login: 'Admin' + generateNumber(),
+                password: passwordHash,
+                admin: true,
+                passwordString: password
+            };
+            console.log(data);
+            return data;
+        }
+
+        const admin1 = await generateData();
+        const admin2 = await generateData();
+
+        const user1 = await User.create(admin1);
+        const user2 = await User.create(admin2);
+
+        if (user1 && user2) {
+            return res.status(201).send(`Zarejestrowany administrator pierwszy: login: ${admin1.login}, hasło: ${admin1.passwordString}, administrator drugi : login: ${admin2.login}, hasło: ${admin2.passwordString}`);
+        } else {
+            return res.status(409).send("Wystąpił błąd");
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 //Logowanie
 
@@ -53,8 +94,11 @@ const login = async (req, res) => {
     try {
         const { login, password } = req.body;
 
+        console.log(login);
+        console.log(password);
+
         //Odnalezienie użytkownika w bazie
-        const user = await User.findOne({ login });
+        const user = await User.findOne({ where: { login: login }});
 
         //Sprawdzenie hasła
         if (user) {
@@ -70,7 +114,7 @@ const login = async (req, res) => {
                 console.log("user", JSON.stringify(user, null, 2));
                 console.log(token);
                 
-                return res.status(201).send(`Zalogowany użytkownik: ${user.login}`);
+                return res.status(201).send(user);
             } else {
                 return res.status(401).send("Logowanie nie przebiegło pomyślnie");
             }
@@ -86,5 +130,6 @@ const login = async (req, res) => {
 module.exports = {
     signupAdmin,
     signupUser,
+    generateAdminAccounts,
     login
 };

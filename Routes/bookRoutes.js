@@ -12,13 +12,13 @@ router.get('/all', allDisplay);
 router.get('/available', availableDisplay);
 
 //Dodanie książki
-router.post('/add', userAuth.onlyAdmin, addBook);
+router.post('/add', addBook);
 
 //Usunięcie książki
-router.delete('/delete/:id', userAuth.onlyAdmin, deleteBook);
+router.delete('/delete/:id', deleteBook);
 
 //Edycja książki
-router.patch('/edit/:id', userAuth.onlyAdmin, editBook);
+router.patch('/edit/:id', editBook);
 
 //Wypożyczenie
 router.patch('/hire/:id', userAuth.onlyUser, hireBook);

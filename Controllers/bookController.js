@@ -4,17 +4,18 @@ const Book = db.books;
 
 const addBook = async (req, res) => {
     try {
-        const { name, ISBN, autor } = req.body;
+        const { name, ISBN, autor, hire } = req.body;
         const data = {
             name,
             ISBN,
-            autor
+            autor,
+            hire
         };
 
         const book = await Book.create(data);
 
         if (book) {
-            return res.status(201).send(`Dodana książka: ${book.name}`);
+            return res.status(201).send(book);
         } else {
             return res.status(409).send("Wystąpił błąd");
         }
@@ -25,7 +26,7 @@ const addBook = async (req, res) => {
 
 const editBook = async (req, res) => {
     try {
-        const { name, ISBN, autor } = req.body;
+        const { name, ISBN, autor, hire } = req.body;
         
         const { id } = req.params;
         const book = await Book.findOne({ where: { id: id } });
@@ -34,7 +35,8 @@ const editBook = async (req, res) => {
             await book.update({ 
                 name: name,
                 ISBN: ISBN,
-                autor: autor
+                autor: autor,
+                hire: hire
              })
              await book.save();
             return res.status(201).send(`Zedytowano książke: ${book.name}`);
